@@ -33,3 +33,19 @@ markdown_extensions:
 
 nav:
   - 首页: index.md
+  - 校内:
+      - 校内概览: on-campus/index.md
+      - 肠粉: on-campus/changfen.md
+  - 校外:
+      - 校外概览: off-campus/index.md
+      - 潮汕牛肉粿条: off-campus/shantou-beef-noodles.md
+      - 比格披萨自助: off-campus/big-pizza.md
+      - 必胜客汉堡: off-campus/pizza-hut-burger.md
+      - 泰妈: off-campus/taima.md
+      - 今牛: off-campus/jinniu.md
+      - 陶瑞酒店一楼餐厅: off-campus/taorui.md
+      - 汉堡王: off-campus/burger-king.md
+      - 甜品铺叉烧饭: off-campus/dessert-bbq-pork-rice.md
+      - 南昌特色瓦罐汤: off-campus/nanchang-pot-soup.md
+      - 江西小炒: off-campus/jiangxi-stir-fry.md
+      - 久锅子潮汕牛肉火锅: off-campus/jiuguozi.md
