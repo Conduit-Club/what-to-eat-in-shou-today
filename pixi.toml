@@ -1,0 +1,17 @@
+[workspace]
+name = "what-to-eat-in-shou-today"
+version = "0.1.0"
+description = "今日海大吃什么项目"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[dependencies]
+python = ">=3.11,<4"
+
+[pypi-dependencies]
+mkdocs-material = ">=9.0,<10"
+
+[tasks]
+dev = "mkdocs serve"
+serve = "mkdocs serve"
+build = "mkdocs build --strict"
