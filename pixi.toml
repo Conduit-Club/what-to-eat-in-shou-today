@@ -6,12 +6,13 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 
 [dependencies]
-python = ">=3.11,<4"
-
-[pypi-dependencies]
-mkdocs-material = ">=9.0,<10"
+nodejs = ">=20,<27"
+pnpm = ">=9,<11"
 
 [tasks]
-dev = "mkdocs serve"
-serve = "mkdocs serve"
-build = "mkdocs build --strict"
+install = "pnpm --dir website install --frozen-lockfile"
+dev = "pnpm --dir website start"
+serve = "pnpm --dir website serve"
+build = "pnpm --dir website build"
+typecheck = "pnpm --dir website typecheck"
+test = "pnpm --dir website test:e2e"

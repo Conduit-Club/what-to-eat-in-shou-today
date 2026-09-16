@@ -1,0 +1,19 @@
+{
+  "extends": "@docusaurus/tsconfig",
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "types": [
+      "node",
+      "react",
+      "@docusaurus/module-type-aliases",
+      "@docusaurus/theme-classic"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    ".docusaurus"
+  ]
+}

@@ -1,0 +1,13 @@
+:root { --ifm-color-primary: #1976d2; }
+.restaurant-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
+.restaurant-card { border:1px solid var(--ifm-color-emphasis-200); border-radius:12px; overflow:hidden; height:100%; }
+.restaurant-card__body { padding:1rem; }
+.restaurant-card__image { width:100%; aspect-ratio:16/10; object-fit:cover; }
+.restaurant-card h2 { margin-top: .75rem; font-size: 1.35rem; }
+.restaurant-card dd { margin: 0 0 .75rem; color: var(--ifm-color-emphasis-700); }
+.restaurant-filters { display: flex; flex-wrap: wrap; gap: 1rem; }
+.restaurant-filters label, .submission-form label { display: grid; gap: .4rem; }
+.restaurant-filters input, .restaurant-filters select, .submission-form input:not([type=checkbox]), .submission-form textarea, .submission-form select { padding: .6rem; border: 1px solid var(--ifm-color-emphasis-400); border-radius: .35rem; color: var(--ifm-font-color-base); background: var(--ifm-background-color); font: inherit; max-width: 100%; }
+.submission-form { display: grid; gap: 1.2rem; max-width: 640px; }
+.submission-preview { max-width: 100%; max-height: 320px; object-fit: contain; }
+.submission-form input[type=checkbox] { justify-self: start; }

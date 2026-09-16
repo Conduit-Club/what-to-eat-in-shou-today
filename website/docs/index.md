@@ -1,6 +1,10 @@
+---
+slug: /
+---
+
 # 今日海大吃什么
 
-![今日海大吃什么 Banner](images/banner.webp){ .home-banner }
+![今日海大吃什么 Banner](/img/banner.webp)
 
 这是一个面向海大学生的餐饮信息手册，收集校内外餐厅、餐馆和小吃店的同学体验，帮助你快速决定今天吃什么。
 
