@@ -47,6 +47,17 @@ SITE_URL=https://your-account.github.io BASE_URL=/what-to-eat-in-shou-today/ pix
 
 这些值在构建时写入前端，修改后需重新构建；不能放入密钥。将产物交给静态托管即可，不需要 Node.js 常驻服务。深层页面使用目录形式的 `index.html`。
 
+### Cloudflare Workers Static Assets
+
+站点已提供 `website/wrangler.jsonc`，将 `website/build/` 作为 Workers Static Assets 目录。部署前先在 Cloudflare 创建对应 Worker、确认站点域名和路由，然后构建并运行：
+
+```bash
+pixi run --locked build
+pixi run --locked workers-deploy
+```
+
+`workers-deploy` 会向 Cloudflare 写入部署，因此不应在未确认帐号和路由时执行。它不配置投稿接口；只有贡献服务完成测试部署与跨域验证后，才在构建环境设置真实的 `CONTRIBUTION_API_URL`。
+
 ## 内容与扩展
 
 - `website/docs/`：现有餐厅详情及匿名同学评价，保留原始内容。
@@ -59,7 +70,7 @@ SITE_URL=https://your-account.github.io BASE_URL=/what-to-eat-in-shou-today/ pix
 
 新增餐厅时同步更新详情页、分类概览、侧边栏和卡片快照。口感摘要应归属于同学评价，不虚构照片、价格或时间。
 
-当前没有部署投稿后台，也没有 Artalk 服务。后续接入和仓库拆分边界见 [架构与投稿协议](architecture.md)。
+贡献服务已拆至 `what-to-eat-in-shou-contributions`，目前仍是未部署的原型。只有设置了经过验证的 `CONTRIBUTION_API_URL` 时，投稿页才会发送在线投稿；默认继续导出草稿。公开数据的导出格式和接入边界见 [架构与投稿协议](architecture.md) 与 [贡献服务接入说明](contribution-service-integration.md)。
 
 ## 许可
 

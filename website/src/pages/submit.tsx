@@ -4,6 +4,12 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 const maxImageSize = 5 * 1024 * 1024;
 const allowedImages = ['image/jpeg', 'image/png', 'image/webp'];
+const requestTimeoutMs = 30_000;
+
+function isAllowedImage(image: File) {
+  return allowedImages.includes(image.type) && image.size <= maxImageSize;
+}
+
 export default function Submit() {
   const {siteConfig} = useDocusaurusContext();
   const endpoint = String(siteConfig.customFields?.contributionApiUrl || '');
@@ -19,7 +25,9 @@ export default function Submit() {
   }, [image]);
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (busy) return;
     if (!image) { setMessage('请选择餐厅照片。'); return; }
+    if (!isAllowedImage(image)) { setMessage('请选择不超过 5 MiB 的 JPG、PNG 或 WebP 图片。'); return; }
     const data = new FormData(event.currentTarget);
     const payload = {
       schemaVersion: 1,
@@ -46,11 +54,11 @@ export default function Submit() {
     try {
       const body = new FormData();
       body.set('metadata', JSON.stringify(payload)); body.set('image', image);
-      const response = await fetch(endpoint, {method: 'POST', body, signal: AbortSignal.timeout(30000)});
+      const response = await fetch(endpoint, {method: 'POST', body, signal: AbortSignal.timeout(requestTimeoutMs)});
       if (response.status !== 202) throw new Error('投稿未被接收');
       setMessage('投稿已接收，等待审核。审核通过后才会公开显示。');
     } catch {
-      setMessage('上传未成功或结果未确认，请稍后核实再重试。表单内容已保留。');
+      setMessage('上传超时、未成功或结果未确认，请稍后核实再重试。表单内容已保留。');
     } finally { setBusy(false); }
   }
   return <Layout title="提交餐厅"><main className="container margin-vert--lg">
@@ -65,10 +73,10 @@ export default function Submit() {
       <label>口感描述<textarea required maxLength={2000} name="taste" /></label>
       <label>营业时间<input required maxLength={200} name="openingHours" placeholder="未知可填：待补充" /></label>
       <label>用餐日期<input type="date" required name="visitedAt" /></label>
-      <label>餐厅照片（JPG / PNG / WebP，最大 5 MB）<input type="file" required accept="image/jpeg,image/png,image/webp" name="image" onChange={event => {
+      <label>餐厅照片（JPG / PNG / WebP，最大 5 MiB）<input type="file" required accept="image/jpeg,image/png,image/webp" name="image" onChange={event => {
         const file = event.target.files?.[0];
-        if (file && (!allowedImages.includes(file.type) || file.size > maxImageSize)) {
-          setImage(null); event.target.value = ''; setMessage('请选择不超过 5 MB 的 JPG、PNG 或 WebP 图片。');
+        if (file && !isAllowedImage(file)) {
+          setImage(null); event.target.value = ''; setMessage('请选择不超过 5 MiB 的 JPG、PNG 或 WebP 图片。');
         } else { setImage(file || null); setMessage(''); }
       }} /></label>
       {preview && <img className="submission-preview" src={preview} alt="所选餐厅照片预览" />}
