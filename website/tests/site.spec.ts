@@ -1,6 +1,10 @@
 import {test, expect} from '@playwright/test';
 import {readFileSync, existsSync} from 'node:fs';
+import {basename, join} from 'node:path';
 import data from '../src/data/restaurants.json';
+import type {Restaurant} from '../src/types/restaurant';
+
+const restaurants = data as Restaurant[];
 
 const image = {
   name: 'photo.png', mimeType: 'image/png',
@@ -8,14 +12,23 @@ const image = {
 };
 
 test('card data covers every detail and required field without invented dates', () => {
-  expect(new Set(data.map(item => item.id)).size).toBe(data.length);
-  for (const item of data) {
+  expect(new Set(restaurants.map(item => item.id)).size).toBe(restaurants.length);
+  for (const item of restaurants) {
     expect(['on-campus', 'off-campus']).toContain(item.category);
     for (const field of ['name', 'location', 'taste', 'price'] as const) expect(item[field].trim()).not.toBe('');
     for (const field of ['image', 'openingHours', 'visitedAt', 'updatedAt'] as const) expect(item).toHaveProperty(field);
+    for (const field of ['visitedAt', 'updatedAt'] as const) {
+      if (item[field] !== null) expect(item[field]).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
     const path = `docs${item.detailPath}.md`;
     expect(existsSync(path)).toBe(true);
     expect(readFileSync(path, 'utf8')).toContain(`# ${item.name}`);
+    const index = readFileSync(`docs/${item.category}/index.md`, 'utf8');
+    expect(index).toContain(`(${basename(path)})`);
+    const sidebar = readFileSync('../sidebars.ts', 'utf8');
+    expect(sidebar).toContain(`'${item.category}/${item.id}'`);
+    if (item.image?.startsWith('/img/')) expect(existsSync(join('../static', item.image.slice(1)))).toBe(true);
+    if (item.image?.startsWith('http')) expect(item.image).toMatch(/^https:\/\//);
   }
 });
 
@@ -23,7 +36,7 @@ test('cards are pre-rendered and work under a deployment prefix', async ({browse
   const context = await browser.newContext({javaScriptEnabled: false});
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4173/food/restaurants/');
-  await expect(page.locator('.restaurant-card')).toHaveCount(data.length);
+  await expect(page.locator('.restaurant-card')).toHaveCount(restaurants.length);
   await expect(page.locator('.restaurant-card img').first()).toHaveAttribute('src', '/food/img/restaurant-placeholder.svg');
   await page.getByRole('link', {name: '肠粉', exact: true}).click();
   await expect(page).toHaveURL(/\/food\/on-campus\/changfen\/$/);
@@ -80,6 +93,15 @@ test('photo preview, validation, draft export or moderated upload', async ({page
     await page.route(endpoint, route => route.fulfill({status: 500, body: 'error'}));
     await page.getByRole('button', {name: '提交审核'}).click();
     await expect(page.getByRole('status')).toContainText('上传未成功');
+    await expect(page.getByLabel('餐厅名称')).toHaveValue('测试餐厅');
+    await page.unroute(endpoint);
+    await page.route(endpoint, route => route.fulfill({status: 201, body: '{}'}));
+    await page.getByRole('button', {name: '提交审核'}).click();
+    await expect(page.getByRole('status')).toContainText('结果未确认');
+    await page.unroute(endpoint);
+    await page.route(endpoint, route => route.abort('timedout'));
+    await page.getByRole('button', {name: '提交审核'}).click();
+    await expect(page.getByRole('status')).toContainText('上传超时');
     await expect(page.getByLabel('餐厅名称')).toHaveValue('测试餐厅');
     await page.unroute(endpoint);
     await page.route(endpoint, async route => {

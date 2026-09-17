@@ -7,7 +7,9 @@
     "build": "docusaurus build",
     "serve": "docusaurus serve",
     "typecheck": "tsc",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "workers:dev": "wrangler dev",
+    "workers:deploy": "wrangler deploy"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
@@ -26,7 +28,8 @@
     "@playwright/test": "^1.63.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
-    "typescript": "~5.6.2"
+    "typescript": "~5.6.2",
+    "wrangler": "^4.0.0"
   },
   "engines": {
     "node": ">=20"
