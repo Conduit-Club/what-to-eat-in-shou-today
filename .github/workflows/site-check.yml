@@ -1,0 +1,25 @@
+name: Site checks
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: prefix-dev/setup-pixi@v0.9.0
+        with:
+          pixi-version: latest
+          manifest-path: pixi.toml
+      - run: pixi run --locked install
+      - run: pixi run --locked typecheck
+      - run: pixi run --locked build
+      # 交互测试需要 Playwright 自己的 Chromium；pixi 环境里没有浏览器，
+      # 不安装的话 `pixi run test` 在 CI 上必然失败。
+      - run: pixi run --locked pnpm --dir website exec playwright install --with-deps chromium
+      - run: pixi run --locked test
+      - run: git diff --check
