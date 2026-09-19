@@ -5,7 +5,7 @@ const sidebars: SidebarsConfig = {
     'index',
     {
       type: 'category', label: '校内',
-      items: ['on-campus/index', 'on-campus/changfen'],
+      items: ['on-campus/index', 'on-campus/first-canteen', 'on-campus/second-canteen', 'on-campus/flavor-restaurant', 'on-campus/changfen'],
     },
     {
       type: 'category', label: '校外',
