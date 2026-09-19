@@ -5,6 +5,7 @@ import data from '../src/data/restaurants.json';
 import type {Restaurant} from '../src/types/restaurant';
 
 const restaurants = data as Restaurant[];
+const onCampusCount = restaurants.filter(item => item.category === 'on-campus').length;
 
 const image = {
   name: 'photo.png', mimeType: 'image/png',
@@ -25,9 +26,9 @@ test('card data covers every detail and required field without invented dates', 
     expect(readFileSync(path, 'utf8')).toContain(`# ${item.name}`);
     const index = readFileSync(`docs/${item.category}/index.md`, 'utf8');
     expect(index).toContain(`(${basename(path)})`);
-    const sidebar = readFileSync('../sidebars.ts', 'utf8');
+    const sidebar = readFileSync('sidebars.ts', 'utf8');
     expect(sidebar).toContain(`'${item.category}/${item.id}'`);
-    if (item.image?.startsWith('/img/')) expect(existsSync(join('../static', item.image.slice(1)))).toBe(true);
+    if (item.image?.startsWith('/img/')) expect(existsSync(join('static', item.image.slice(1)))).toBe(true);
     if (item.image?.startsWith('http')) expect(item.image).toMatch(/^https:\/\//);
   }
 });
@@ -50,7 +51,7 @@ test('filtering, images, mobile width and dark mode', async ({page}, testInfo) =
   await page.goto('restaurants/');
   await page.screenshot({path: testInfo.outputPath('desktop.png'), fullPage: true});
   await page.getByLabel('就餐范围').selectOption('on-campus');
-  await expect(page.locator('.restaurant-card')).toHaveCount(1);
+  await expect(page.locator('.restaurant-card')).toHaveCount(onCampusCount);
   await page.getByLabel('就餐范围').selectOption('all');
   await page.getByLabel('搜索名称或位置').fill('肠粉');
   await expect(page.locator('.restaurant-card')).toHaveCount(1);
