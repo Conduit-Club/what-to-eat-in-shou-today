@@ -47,6 +47,10 @@ SITE_URL=https://your-account.github.io BASE_URL=/what-to-eat-in-shou-today/ pix
 
 这些值在构建时写入前端，修改后需重新构建；不能放入密钥。将产物交给静态托管即可，不需要 Node.js 常驻服务。深层页面使用目录形式的 `index.html`。
 
+### Vercel
+
+前端部署目标为 Vercel：Vercel 项目 Root Directory 设为 `website`，仓库已提供 `website/vercel.json` 声明 Docusaurus 构建命令与产物目录。后端使用 Cloudflare Workers，方案见 [deployment-vercel-cloudflare.md](./deployment-vercel-cloudflare.md)。
+
 ### Cloudflare Workers Static Assets
 
 站点已提供 `website/wrangler.jsonc`，将 `website/build/` 作为 Workers Static Assets 目录。部署前先在 Cloudflare 创建对应 Worker、确认站点域名和路由，然后构建并运行：

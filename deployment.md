@@ -17,13 +17,15 @@
 
 ```text
 浏览器
-  ├─ 静态站点：Cloudflare Workers Static Assets（website/build）
+  ├─ 静态站点：Vercel（website/build，之后绑定自定义域名）
   └─ 投稿表单 → Cloudflare Worker（贡献服务仓库）
-                      ├─ D1：投稿元数据与发布任务
+                      ├─ D1：投稿记录、审计与限流
                       └─ R2（私有）：待审图片
                               ↓ 审核通过
                       导出任务生成站点 PR → dev → main → 重新构建并部署
 ```
+
+前端当前选定 Vercel，配置见 `website/vercel.json` 与 `deployment-vercel-cloudflare.md`；Cloudflare Workers Static Assets 保留为备选方案。
 
 ## 站点部署
 
